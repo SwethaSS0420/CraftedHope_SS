@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'logout.dart';
 import 'mydetails.dart';
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+
+class CustomAppBar1 extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(50.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFB99A45), // Set the background color
       flexibleSpace: Stack(
         children: [
           Positioned(
-            left: 0,
-            top: 35.0,
+            left: 30.0,
+            top: 40.0,
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/about_us');
               },
             child: Image.asset(
-              'assets/lg_whitebg.png',
-              height: 60,
+              'assets/bamboo.png',
+              height: 55,
               width: 100,
             ),
           ),
@@ -45,7 +45,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           ),
           Positioned(
-            top: 40.0,
+            top: 35.0,
             right: 12.0,
             child: IconButton(
               onPressed: () {
@@ -63,7 +63,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ),
                         onTap: () {
-                          
                           Navigator.popAndPushNamed(context, '/myaccount');
                         },
                       ),
@@ -141,10 +140,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 );
               },
-              icon: Image.asset(
-                'assets/lines.png',
-                height: 30,
-                width: 40,
+              icon: Icon(
+                Icons.menu, // Use the menu icon from the Material Icons set
+                color: Colors.black, // Set the color to black
+                size: 50, // Set the size of the icon
               ),
             ),
           ),

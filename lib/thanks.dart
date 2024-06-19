@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sls/top.dart';
 import 'top.dart';
 import 'bottom.dart';
+import 'about.dart';
 import 'package:confetti/confetti.dart';
 
 class ThankYouPage extends StatefulWidget {
@@ -36,9 +37,11 @@ class _ThankYouPageState extends State<ThankYouPage> {
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center, // Center the text horizontally
                 children: [
                   Text(
                     'Thank you for your contribution!',
+                    textAlign: TextAlign.center, // Center the text horizontally
                     style: TextStyle(
                       fontFamily: 'Gabriela-Regular',
                       fontSize: 24,
@@ -47,11 +50,42 @@ class _ThankYouPageState extends State<ThankYouPage> {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'Your generosity will make a difference.',
+                    'Your generosity will make a difference',
+                    textAlign: TextAlign.center, // Center the text horizontally
                     style: TextStyle(
                       fontFamily: 'Gabriela-Regular',
                       fontSize: 18,
                       color: Color(0xFFB99A45), // Set text color to B99A45
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'We will contact you via email for further instructions',
+                    textAlign: TextAlign.center, // Center the text horizontally
+                    style: TextStyle(
+                      fontFamily: 'Gabriela-Regular',
+                      fontSize: 18,
+                      color: Color(0xFFB99A45), // Set text color to B99A45
+                    ),
+                  ),
+                  SizedBox(height: 40),
+                  ElevatedButton(
+                    onPressed: () {
+                      _controller.stop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AboutUsPage()),
+                      );
+                    },
+                    child: Text(
+                      'CONTINUE',
+                      style: TextStyle(
+                        fontFamily: 'Gabriela-Regular',
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFB99A45),
+                      foregroundColor: Colors.white, 
                     ),
                   ),
                 ],

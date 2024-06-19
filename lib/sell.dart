@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sls/top.dart';
 import 'bottom.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'buy.dart';
 
@@ -76,7 +75,7 @@ class _SellThriftPageState extends State<SellThriftPage> {
             ElevatedButton(
               onPressed: _getImage,
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFFB99A45), // Set button color to B99A45
+                backgroundColor: Color(0xFFB99A45), // Set button color to B99A45
               ),
               child: Text(
                 'Upload Image',
@@ -113,7 +112,7 @@ class _SellThriftPageState extends State<SellThriftPage> {
             ElevatedButton(
               onPressed: () => _uploadDetails(context),
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFFB99A45), // Set button color to B99A45
+                backgroundColor: Color(0xFFB99A45), // Set button color to B99A45
               ),
               child: Text(
                 'Upload Details',

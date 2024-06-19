@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'dform.dart';
 import 'bottom.dart';
 import 'top.dart';
 import 'rform.dart';
@@ -28,13 +27,14 @@ class WebViewPage extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
       ),
-      body: WebView(
-        initialUrl: url,
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+    body: WebView(
+      initialUrl: url,
+      javascriptMode: JavascriptMode.unrestricted,
+      ), 
     );
   }
 }
+
 
 class rec extends StatelessWidget {
   @override
@@ -140,7 +140,7 @@ class rec extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFB99A45), // Set the button color
+                  backgroundColor: Color(0xFFB99A45), // Set the button color
                 ),
                 child: Text(
                   'RECYCLE NOW',

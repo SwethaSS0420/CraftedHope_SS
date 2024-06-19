@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sls/top.dart';
 import 'sell.dart';
-import 'buy.dart';
 import 'bottom.dart';
 
 class ThriftPage extends StatelessWidget {
@@ -27,7 +26,7 @@ class ThriftPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFB99A45), // Set button color to B99A45
+                    backgroundColor: Color(0xFFB99A45), // Set button color to B99A45
                   ),
                   child: Text('Buy Thrift Clothes', style: TextStyle(color: Colors.white)), // Set text color to white
                 ),
@@ -47,7 +46,7 @@ class ThriftPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFB99A45), // Set button color to B99A45
+                    backgroundColor: Color(0xFFB99A45), // Set button color to B99A45
                   ),
                   child: Text('Sell Thrift Clothes', style: TextStyle(color: Colors.white)), // Set text color to white
                 ),

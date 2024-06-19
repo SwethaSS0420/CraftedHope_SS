@@ -16,13 +16,13 @@ class BottomNavigation extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.message),
             onPressed: () {
-              // Handle message button press
+              
             },
           ),
           IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              // Handle shopping cart button press
+              Navigator.pushNamed(context, '/cart');
             },
           ),
         ],

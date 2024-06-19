@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'about.dart';
 import 'account.dart'; 
 import 'pwd.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -15,6 +14,7 @@ class LoginPage extends StatelessWidget {
         email: emailController.text,
         password: passwordController.text,
       );
+      
       // Navigate to the home page after successful login
       Navigator.push(
         context,
@@ -107,7 +107,7 @@ class LoginPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => signIn(context),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFB99A45),
+                      backgroundColor: Color(0xFFB99A45),
                     ),
                     child: Text(
                       'Login',
@@ -128,7 +128,7 @@ class LoginPage extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFB99A45),
+                      backgroundColor: Color(0xFFB99A45),
                     ),
                     child: Text(
                       'Create Account',
@@ -149,7 +149,7 @@ class LoginPage extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFB99A45),
+                      backgroundColor: Color(0xFFB99A45),
                     ),
                     child: Text(
                       'Forgot Password?',

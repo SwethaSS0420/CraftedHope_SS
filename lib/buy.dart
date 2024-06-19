@@ -28,8 +28,7 @@ class BuyThriftPage extends StatelessWidget {
               icon: Icon(Icons.payment), // Icon indicating payment
               label: Text('Pay using GPay'), // Button text
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // Set button color to blue
-                onPrimary: Colors.white, // Set text color to white
+                foregroundColor: Colors.white, backgroundColor: Colors.blue, // Set text color to white
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20), // Set button border radius
                 ),

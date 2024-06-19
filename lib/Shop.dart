@@ -1,188 +1,257 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'top.dart';
 import 'bottom.dart';
+import 'product_detail_page.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class Shop extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: shop(),
-    );
-  }
+  _ShopState createState() => _ShopState();
 }
 
-class shop extends StatelessWidget {
-  final List<Map<String, dynamic>> products = [
-    {
-      'name': 'Dress 1',
-      'image': 'assets/dress1.png',
-      'designer': 'Designer 1',
-      'color': 'White and Red',
-      'sizes': ['S', 'M', 'L']
-    },
-    {
-      'name': 'Dress 2',
-      'image': 'assets/dress2.png',
-      'designer': 'Designer 2',
-      'color': 'Blue',
-      'sizes': ['M', 'L']
-    },
-    // Add more products here
-  ];
+class _ShopState extends State<Shop> {
+  String _sortOption = 'Low to High';
+  String searchQuery = '';
+  String selectedFilter = 'All';
+  bool isSearching = false; // Flag to indicate if user is currently searching
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(), // Using the custom app bar widget
-      backgroundColor: Colors.black, // Set background color to black
-      body: GridView.builder(
-        padding: EdgeInsets.all(16.0),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 0.7,
-        ),
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductDetailPage(product: products[index]),
-                ),
-              );
-            },
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 160,
-                    width: double.infinity,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.0),
-                        topRight: Radius.circular(16.0),
-                      ),
-                      child: Image.asset(
-                        products[index]['image'],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+      appBar: CustomAppBar(), 
+      // Your custom app bar
+      backgroundColor: Colors.black,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                
+                Container(
+                  width: 150, // Adjust the width as needed
+                  decoration: BoxDecoration(
+                    color: Color(0xFFB99A45), // Background color for the dropdown
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          products[index]['name'],
-                          style: TextStyle(
-                            fontFamily: 'Gabriela-Regular',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  child: DropdownButton<String>(
+                    value: _sortOption,
+                    items: [
+                      DropdownMenuItem(
+                        child: Text(
+                          'Price: Low to High',
+                          style: TextStyle(color: Colors.black),
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Designer: ${products[index]['designer']}',
-                          style: TextStyle(
-                            fontFamily: 'Gabriela-Regular',
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
+                        value: 'Low to High',
+                      ),
+                      DropdownMenuItem(
+                        child: Text(
+                          'Price: High to Low',
+                          style: TextStyle(color: Colors.black),
                         ),
-                      ],
-                    ),
+                        value: 'High to Low',
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _sortOption = value!;
+                      });
+                    },
+                    dropdownColor: Colors.white,
+                    iconEnabledColor: Colors.black,
+                    style: TextStyle(color: Colors.black),
+                    underline: Container(),
                   ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: BottomNavigation(),
-    );
-  }
-}
-
-class ProductDetailPage extends StatelessWidget {
-  final Map<String, dynamic> product;
-
-  ProductDetailPage({required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(), // Using the custom app bar widget
-      backgroundColor: Colors.black, // Set background color to black
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image on the left
-            Expanded(
-              flex: 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Image.asset(
-                  product['image'],
-                  height: 200,
-                  fit: BoxFit.cover,
                 ),
-              ),
+                if (!isSearching)
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isSearching = true;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.search,
+                      color: Colors.white, // Set the color to white
+                    ),
+                  ),
+                if (isSearching) // Show text field only if searching is active
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(right: 8), // Adjust padding to move text field to the left of the search icon
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search...',
+                          border: InputBorder.none,
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                if (isSearching) // Show search button only if searching is active
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isSearching = false;
+                        searchQuery = '';
+                      });
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.white, // Set the color to white
+                    ),
+                  ),
+              ],
             ),
-            SizedBox(width: 16), // Add some spacing between the image and details
-            // Details on the right
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Designer: ${product['designer']}',
-                    style: TextStyle(
-                      fontFamily: 'Gabriela-Regular',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+          ),
+          Expanded(
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('products').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+
+                var products = snapshot.data!.docs.map((doc) {
+                  return {
+                    'name': doc['name'],
+                    'image': doc['image'],
+                    'designer': doc['designer'],
+                    'color': doc['color'],
+                    'sizes': List<String>.from(doc['sizes']),
+                    'price': doc['price'] is num ? doc['price'] : int.tryParse(doc['price'].toString()) ?? 0.0,
+                    'description': doc['description'],
+                    'discount': doc['discount'],
+                  };
+                }).toList();
+
+                // Filter products based on the search query
+                products = products.where((product) {
+                  final productName = product['name'].toString().toLowerCase();
+                  return searchQuery.isEmpty || productName.contains(searchQuery.toLowerCase());
+                }).toList();
+                
+                // Sort products based on the selected sorting option
+                if (_sortOption == 'Low to High') {
+                  products.sort((a, b) => a['price'].compareTo(b['price']));
+                } else {
+                  products.sort((a, b) => b['price'].compareTo(a['price']));
+                }
+
+                return GridView.builder(
+                  padding: EdgeInsets.all(16.0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.55,
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Color: ${product['color']}',
-                    style: TextStyle(
-                      fontFamily: 'Gabriela-Regular',
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Sizes Available: ${product['sizes'].join(', ')}',
-                    style: TextStyle(
-                      fontFamily: 'Gabriela-Regular',
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  // Add more details as needed
-                ],
-              ),
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    int discountedPrice = products[index]['price'] - products[index]['discount'];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailPage(product: products[index]),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                  height: 180,
+                                  width: double.infinity,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16.0),
+                                      topRight: Radius.circular(16.0),
+                                    ),
+                                    child: Image.network(
+                                      products[index]['image'],
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Center(child: Icon(Icons.error));
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    products[index]['name'],
+                                    style: TextStyle(
+                                      fontFamily: 'Gabriela-Regular',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    products[index]['designer'],
+                                    style: TextStyle(
+                                      fontFamily: 'Gabriela-Regular',
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Price: ₹${products[index]['price']}',
+                                    style: TextStyle(
+                                      fontFamily: 'Gabriela-Regular',
+                                      decoration: products[index]['discount'] > 0 ? TextDecoration.lineThrough : null,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  if (products[index]['discount'] > 0)
+                                    Text(
+                                      'Discounted Price: ₹${discountedPrice.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        fontFamily: 'Gabriela-Regular',
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                      ),
+                                    ),  
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigation(),
     );

@@ -27,9 +27,9 @@ class WebViewPage extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
       ),
-      body: WebView(
-        initialUrl: url,
-        javascriptMode: JavascriptMode.unrestricted,
+    body: WebView(
+      initialUrl: url,
+      javascriptMode: JavascriptMode.unrestricted,
       ),
     );
   }
@@ -135,11 +135,11 @@ class Donate extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => dform()),
+                    MaterialPageRoute(builder: (context) => DonationForm()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFB99A45), // Set the button color
+                  backgroundColor: Color(0xFFB99A45), // Set the button color
                 ),
                 child: Text(
                   'DONATE',

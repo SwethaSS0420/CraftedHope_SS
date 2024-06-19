@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => AboutUsPage(),
         '/Donate': (context) => Donate(),
-        '/shop': (context) => shop(),
+        '/shop': (context) => Shop(),
       },
        
     );
