@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sls/top.dart';
-import 'top.dart';
 import 'bottom.dart';
 import 'about.dart';
 import 'package:confetti/confetti.dart';

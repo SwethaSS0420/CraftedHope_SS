@@ -3,8 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'top.dart';
-import 'bottom.dart';
-import 'about.dart';
 import 'thanks.dart';
 
 void main() async {

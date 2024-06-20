@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';  
 import 'cart_provider.dart';
@@ -11,13 +10,9 @@ import 'Shop.dart';
 import 'recycle.dart';
 import 'rform.dart';
 import 'thrift.dart';
-import 'sell.dart';
-import 'buy.dart';
 import 'logout.dart';
-import 'pwd.dart';
 import 'mydetails.dart';
 import 'cart.dart';
-import 'cart_provider.dart';
 
 void main() async { 
   WidgetsFlutterBinding.ensureInitialized();

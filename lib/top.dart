@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'logout.dart';
-import 'mydetails.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(50.0);

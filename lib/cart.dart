@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sls/top.dart';
-import 'goldbgtop.dart';
 import 'cart_provider.dart';
 import 'bottom.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'payment.dart';
-import 'top.dart';
 
 class CartPage extends StatefulWidget {
   @override
