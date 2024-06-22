@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'top.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'bottom.dart';
 import 'product_detail_page.dart';
+import 'top.dart';
 
 class Shop extends StatefulWidget {
   @override
@@ -13,13 +14,12 @@ class _ShopState extends State<Shop> {
   String _sortOption = 'Low to High';
   String searchQuery = '';
   String selectedFilter = 'All';
-  bool isSearching = false; // Flag to indicate if user is currently searching
+  bool isSearching = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(), 
-      // Your custom app bar
+      appBar: CustomAppBar(),
       backgroundColor: Colors.black,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,11 +28,10 @@ class _ShopState extends State<Shop> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                
                 Container(
-                  width: 150, // Adjust the width as needed
+                  width: 150,
                   decoration: BoxDecoration(
-                    color: Color(0xFFB99A45), // Background color for the dropdown
+                    color: Color(0xFFB99A45),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
@@ -74,13 +73,13 @@ class _ShopState extends State<Shop> {
                     },
                     icon: Icon(
                       Icons.search,
-                      color: Colors.white, // Set the color to white
+                      color: Colors.white,
                     ),
                   ),
-                if (isSearching) // Show text field only if searching is active
+                if (isSearching)
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.only(right: 8), // Adjust padding to move text field to the left of the search icon
+                      padding: EdgeInsets.only(right: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -98,7 +97,7 @@ class _ShopState extends State<Shop> {
                       ),
                     ),
                   ),
-                if (isSearching) // Show search button only if searching is active
+                if (isSearching)
                   IconButton(
                     onPressed: () {
                       setState(() {
@@ -108,7 +107,7 @@ class _ShopState extends State<Shop> {
                     },
                     icon: Icon(
                       Icons.close,
-                      color: Colors.white, // Set the color to white
+                      color: Colors.white,
                     ),
                   ),
               ],
@@ -128,6 +127,7 @@ class _ShopState extends State<Shop> {
 
                 var products = snapshot.data!.docs.map((doc) {
                   return {
+                    'id': doc.id,
                     'name': doc['name'],
                     'image': doc['image'],
                     'designer': doc['designer'],
@@ -139,13 +139,11 @@ class _ShopState extends State<Shop> {
                   };
                 }).toList();
 
-                // Filter products based on the search query
                 products = products.where((product) {
                   final productName = product['name'].toString().toLowerCase();
                   return searchQuery.isEmpty || productName.contains(searchQuery.toLowerCase());
                 }).toList();
                 
-                // Sort products based on the selected sorting option
                 if (_sortOption == 'Low to High') {
                   products.sort((a, b) => a['price'].compareTo(b['price']));
                 } else {
@@ -163,88 +161,114 @@ class _ShopState extends State<Shop> {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     int discountedPrice = products[index]['price'] - products[index]['discount'];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetailPage(product: products[index]),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
+                    return FutureBuilder(
+                      future: _isWishlisted(products[index]['id']),
+                      builder: (context, snapshot) {
+                        bool isWishlisted = snapshot.data ?? false;
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetailPage(product: products[index]),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  height: 180,
-                                  width: double.infinity,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(16.0),
-                                      topRight: Radius.circular(16.0),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 180,
+                                      width: double.infinity,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0),
+                                        ),
+                                        child: Image.network(
+                                          products[index]['image'],
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Center(child: Icon(Icons.error));
+                                          },
+                                        ),
+                                      ),
                                     ),
-                                    child: Image.network(
-                                      products[index]['image'],
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Center(child: Icon(Icons.error));
-                                      },
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: Container(
+                                        padding: EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.black.withOpacity(0.6), // Adjust opacity and color as needed
+                                        ),
+                                        child: IconButton(
+                                          icon: Icon(
+                                            isWishlisted ? Icons.favorite : Icons.favorite_border,
+                                            color: isWishlisted ? Colors.red : Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            _toggleWishlist(products[index], isWishlisted);
+                                          },
+                                        ),
+                                      ),
                                     ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        products[index]['name'],
+                                        style: TextStyle(
+                                          fontFamily: 'Gabriela-Regular',
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        products[index]['designer'],
+                                        style: TextStyle(
+                                          fontFamily: 'Gabriela-Regular',
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Price: ₹${products[index]['price']}',
+                                        style: TextStyle(
+                                          fontFamily: 'Gabriela-Regular',
+                                          decoration: products[index]['discount'] > 0 ? TextDecoration.lineThrough : null,
+                                          fontSize: 14,
+                                          color: Colors.grey[800],
+                                        ),
+                                      ),
+                                      if (products[index]['discount'] > 0)
+                                        Text(
+                                          'Discounted Price: ₹${discountedPrice.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            fontFamily: 'Gabriela-Regular',
+                                            fontSize: 16,
+                                            color: Colors.green,
+                                          ),
+                                        ),  
+                                    ],
                                   ),
                                 ),
-                                
                               ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    products[index]['name'],
-                                    style: TextStyle(
-                                      fontFamily: 'Gabriela-Regular',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    products[index]['designer'],
-                                    style: TextStyle(
-                                      fontFamily: 'Gabriela-Regular',
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Price: ₹${products[index]['price']}',
-                                    style: TextStyle(
-                                      fontFamily: 'Gabriela-Regular',
-                                      decoration: products[index]['discount'] > 0 ? TextDecoration.lineThrough : null,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  if (products[index]['discount'] > 0)
-                                    Text(
-                                      'Discounted Price: ₹${discountedPrice.toStringAsFixed(2)}',
-                                      style: TextStyle(
-                                        fontFamily: 'Gabriela-Regular',
-                                        fontSize: 16,
-                                        color: Colors.green,
-                                      ),
-                                    ),  
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      }
                     );
                   },
                 );
@@ -256,4 +280,41 @@ class _ShopState extends State<Shop> {
       bottomNavigationBar: BottomNavigation(),
     );
   }
+
+  Future<bool> _isWishlisted(String productId) async {
+    var userId = FirebaseAuth.instance.currentUser!.uid;
+    var result = await FirebaseFirestore.instance
+        .collection('wishlist')
+        .where('productId', isEqualTo: productId)
+        .where('userId', isEqualTo: userId)
+        .get();
+    return result.docs.isNotEmpty;
+  }
+
+  void _toggleWishlist(Map<String, dynamic> product, bool isCurrentlyWishlisted) async {
+    var userId = FirebaseAuth.instance.currentUser!.uid;
+    var result = await FirebaseFirestore.instance
+        .collection('wishlist')
+        .where('productId', isEqualTo: product['id'])
+        .where('userId', isEqualTo: userId)
+        .get();
+    if (result.docs.isEmpty && !isCurrentlyWishlisted) {
+      FirebaseFirestore.instance.collection('wishlist').add({
+        'productId': product['id'],
+        'userId': userId,
+        'name': product['name'],
+        'image': product['image'],
+        'designer': product['designer'],
+        'color': product['color'],
+        'sizes': product['sizes'],
+        'price': product['price'],
+        'description': product['description'],
+        'discount': product['discount'],
+      });
+    } else if (result.docs.isNotEmpty && isCurrentlyWishlisted) {
+      result.docs.first.reference.delete();
+    }
+    setState(() {});
+  }
 }
+

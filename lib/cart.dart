@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sls/goldtop.dart';
 import 'package:sls/top.dart';
 import 'cart_provider.dart';
 import 'bottom.dart';
@@ -28,7 +29,7 @@ class _CartPageState extends State<CartPage> {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: Goldtop(),
       body: Consumer<CartProvider>(
         builder: (context, cart, child) {
           if (user == null) {

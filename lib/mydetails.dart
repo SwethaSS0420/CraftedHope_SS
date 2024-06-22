@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sls/top.dart';
+import 'package:sls/goldtop.dart';
+import 'package:sls/wishlist.dart';
 import 'bottom.dart';
 import 'myorders.dart'; // Make sure to import the OrdersPage
 
@@ -73,7 +74,7 @@ class _MyDetailsPageState extends State<MyDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: Goldtop(),
       body: FutureBuilder<User?>(
         future: FirebaseAuth.instance.authStateChanges().first,
         builder: (context, snapshot) {
@@ -180,10 +181,10 @@ class _MyDetailsPageState extends State<MyDetailsPage> {
                         SizedBox(height: 10), // Spacing between buttons
                         ElevatedButton.icon(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => OrdersPage()),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => WishlistPage()),
+                            );
                           },
                           icon:Image.asset(
                             'assets/wishlist.png',

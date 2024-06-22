@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-class CustomAppBar1 extends StatelessWidget implements PreferredSizeWidget {
+class Goldtop extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(50.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Color(0xFFB99A45), // Set the background color
       flexibleSpace: Stack(
         children: [
           Positioned(
-            left: 30.0,
+            left:0,
             top: 40.0,
             child: GestureDetector(
               onTap: () {

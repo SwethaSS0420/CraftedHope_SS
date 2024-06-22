@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sls/goldtop.dart';
 import 'bottom.dart';
-import 'top.dart';
 import 'product_detail_page.dart';
 
 class OrderDetailsPage extends StatelessWidget {
@@ -16,7 +16,7 @@ class OrderDetailsPage extends StatelessWidget {
 
     if (orderItems == null || orderItems.isEmpty) {
       return Scaffold(
-        appBar: CustomAppBar(),
+        appBar: Goldtop(),
         body: Center(
           child: Text(
             'No items in this order',
@@ -28,7 +28,7 @@ class OrderDetailsPage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: Goldtop(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

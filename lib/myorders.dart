@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sls/goldtop.dart';
 import 'bottom.dart';
 import 'orderdetails.dart';
 import 'top.dart';
@@ -12,7 +13,7 @@ class OrdersPage extends StatelessWidget {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: Goldtop(),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('orders')
@@ -59,7 +60,6 @@ class OrdersPage extends StatelessWidget {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xffb99a45),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: ListTile(
