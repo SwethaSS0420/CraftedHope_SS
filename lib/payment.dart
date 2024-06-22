@@ -26,6 +26,7 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> {
   late Razorpay _razorpay;
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   TextEditingController _contactController = TextEditingController();
@@ -49,26 +50,28 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _openCheckout() {
-    var options = {
-      'key': 'rzp_live_ILgsfZCZoFIKMb',
-      'amount': widget.totalAmount * 100, // Amount is in paise
-      'name': 'CraftedHope',
-      'description': 'Fine T-Shirt',
-      'retry': {'enabled': true, 'max_count': 1},
-      'send_sms_hash': true,
-      'prefill': {
-        'contact': _contactController.text,
-        'email': 'test@razorpay.com',
-      },
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
+    if (_formKey.currentState!.validate()) {
+      var options = {
+        'key': 'rzp_live_ILgsfZCZoFIKMb',
+        'amount': widget.totalAmount * 100, // Amount is in paise
+        'name': 'CraftedHope',
+        'description': 'Fine T-Shirt',
+        'retry': {'enabled': true, 'max_count': 1},
+        'send_sms_hash': true,
+        'prefill': {
+          'contact': _contactController.text,
+          'email': 'test@razorpay.com',
+        },
+        'external': {
+          'wallets': ['paytm']
+        }
+      };
 
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: $e');
+      try {
+        _razorpay.open(options);
+      } catch (e) {
+        debugPrint('Error: $e');
+      }
     }
   }
 
@@ -96,8 +99,7 @@ class _PaymentPageState extends State<PaymentPage> {
         "${response.walletName}");
   }
 
-  void _showAlertDialog(
-      BuildContext context, String title, String message) {
+  void _showAlertDialog(BuildContext context, String title, String message) {
     AlertDialog alert = AlertDialog(
       title: Text(title),
       content: Text(message),
@@ -119,81 +121,106 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _handleCOD() {
-    String userId = FirebaseAuth.instance.currentUser!.uid;
-    Provider.of<CartProvider>(context, listen: false).clearCartAndPlaceOrder(userId, widget.totalAmount);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => OrderPlacedScreen(),
-      ),
-    );
+    if (_formKey.currentState!.validate()) {
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+      Provider.of<CartProvider>(context, listen: false).clearCartAndPlaceOrder(userId, widget.totalAmount);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => OrderPlacedScreen(),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar1(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Delivering to',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Name',
-              ),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              controller: _addressController,
-              decoration: InputDecoration(
-                labelText: 'Address',
-              ),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              controller: _contactController,
-              decoration: InputDecoration(
-                labelText: 'Contact',
-              ),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _openCheckout,
-              child: Text(
-                'Pay with RazorPay',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Gabriela-Regular',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Delivering to',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFB99A45), // Set the button color
-              ),
-            ),
-            SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _handleCOD,
-              child: Text(
-                'Cash On Delivery',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Gabriela-Regular',
+                SizedBox(height: 12),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFB99A45), // Set the button color
-              ),
+                SizedBox(height: 12),
+                TextFormField(
+                  controller: _addressController,
+                  decoration: InputDecoration(
+                    labelText: 'Address',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your address';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 12),
+                TextFormField(
+                  controller: _contactController,
+                  decoration: InputDecoration(
+                    labelText: 'Contact',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your contact number';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _openCheckout,
+                  child: Text(
+                    'Pay with RazorPay',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Gabriela-Regular',
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFB99A45), // Set the button color
+                  ),
+                ),
+                SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: _handleCOD,
+                  child: Text(
+                    'Cash On Delivery',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Gabriela-Regular',
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFB99A45), // Set the button color
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -239,5 +266,3 @@ class OrderPlacedScreen extends StatelessWidget {
     );
   }
 }
-
-
