@@ -98,6 +98,16 @@ class OrdersPage extends StatelessWidget {
                         );
                       },
                     ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => OrderDetailsPage(
+                            orderData: orderData,
+                            orderId: orderDoc.id,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               );
