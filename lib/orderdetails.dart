@@ -23,7 +23,7 @@ class OrderDetailsPage extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontFamily: 'Gabriela-Regular'),
           ),
         ),
-        bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
+        bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.white,currentIndex: 0),
       );
     }
 
@@ -129,7 +129,7 @@ class OrderDetailsPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.white,currentIndex: 0),
     );
   }
 }

@@ -137,8 +137,6 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
-    
   }
 }

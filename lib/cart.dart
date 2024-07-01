@@ -155,7 +155,7 @@ class _CartPageState extends State<CartPage> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.white,currentIndex: 2),
     );
   }
 }
