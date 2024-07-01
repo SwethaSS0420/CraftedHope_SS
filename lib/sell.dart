@@ -122,7 +122,7 @@ class _SellThriftPageState extends State<SellThriftPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 

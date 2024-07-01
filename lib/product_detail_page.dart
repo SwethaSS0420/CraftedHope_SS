@@ -205,7 +205,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),   
     );
   }
 }

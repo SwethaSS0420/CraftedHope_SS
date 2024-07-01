@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'about.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'bottom.dart';
+
 class CreateAccountForm extends StatefulWidget {
   @override
   _CreateAccountFormState createState() => _CreateAccountFormState();
@@ -135,6 +137,8 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
           ),
         ),
       ),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
+    
   }
 }

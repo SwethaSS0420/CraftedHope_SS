@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:sls/goldtop.dart';
 import 'bottom.dart';
 import 'orderdetails.dart';
-import 'top.dart';
 import 'package:intl/intl.dart'; // For date formatting
 
 class OrdersPage extends StatelessWidget {
@@ -115,7 +114,7 @@ class OrdersPage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 }

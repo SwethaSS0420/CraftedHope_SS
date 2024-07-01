@@ -208,7 +208,7 @@ class _MyDetailsPageState extends State<MyDetailsPage> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 }

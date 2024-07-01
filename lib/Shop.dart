@@ -277,7 +277,7 @@ class _ShopState extends State<Shop> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 

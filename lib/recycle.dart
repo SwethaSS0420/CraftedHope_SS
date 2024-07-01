@@ -154,7 +154,7 @@ class rec extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 }

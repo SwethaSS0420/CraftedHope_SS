@@ -285,7 +285,7 @@ class _DonationFormState extends State<DonationForm> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 }

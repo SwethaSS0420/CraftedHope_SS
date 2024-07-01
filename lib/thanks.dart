@@ -106,7 +106,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 }

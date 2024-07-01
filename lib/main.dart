@@ -18,11 +18,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(
+    
     ChangeNotifierProvider(
       create: (context) => CartProvider(),
       child: MyApp(),
     ),
-    
   );
 }
 
@@ -64,7 +64,9 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Image.asset(
-          'assets/logo.png', // Path to your logo image
+          'assets/logo.png',
+          width: 200,
+          height: 200,
         ),
       ),
     );
