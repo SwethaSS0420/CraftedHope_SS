@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
+import 'goldtop.dart';
+import 'bottom.dart';
+import 'buy.dart';
+import 'sell.dart';
 
 class ThriftPage extends StatefulWidget {
   @override
@@ -8,239 +12,146 @@ class ThriftPage extends StatefulWidget {
 }
 
 class _ThriftPageState extends State<ThriftPage> {
-  String searchQuery = "";
-  String selectedFilter = "All";
-  final List<String> filters = ["All", "Color", "Type", "Size", "Price", "Condition"];
+  late VideoPlayerController _videoPlayerController;
+  late ChewieController _chewieController;
+  bool _isChewieInitialized = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideoPlayer();
+  }
+
+  void _initializeVideoPlayer() async {
+    _videoPlayerController = VideoPlayerController.asset('assets/thriftvid.mp4');
+    try {
+      await _videoPlayerController.initialize();
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        autoPlay: true,
+        looping: true,
+        aspectRatio: 16 / 9, // Adjust aspect ratio as per your video's dimensions
+      );
+      setState(() {
+        _isChewieInitialized = true;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print("Error initializing video player: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    _chewieController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Thrift'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              _showSearchDialog();
-            },
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          _buildFilters(),
-          _buildFeaturedItems(),
-          Expanded(child: _buildProductListings()),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilters() {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: filters.map((filter) => _buildFilterChip(filter)).toList(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip(String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: selectedFilter == label,
-        onSelected: (bool selected) {
-          setState(() {
-            selectedFilter = selected ? label : "All";
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _buildFeaturedItems() {
-    return Container(
-      height: 150.0,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          _buildFeaturedItem('Featured 1'),
-          _buildFeaturedItem('Featured 2'),
-          _buildFeaturedItem('Featured 3'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeaturedItem(String label) {
-    return Container(
-      width: 100.0,
-      margin: EdgeInsets.all(8.0),
-      color: Colors.grey[300],
-      child: Center(child: Text(label)),
-    );
-  }
-
-  Widget _buildProductListings() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('products').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        final products = snapshot.data!.docs.where((product) {
-          final productName = product['name'].toString().toLowerCase();
-          return selectedFilter == "All" || product[selectedFilter.toLowerCase()] != null;
-        }).where((product) {
-          final productName = product['name'].toString().toLowerCase();
-          return searchQuery.isEmpty || productName.contains(searchQuery.toLowerCase());
-        }).toList();
-
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 2 / 3,
-          ),
-          itemCount: products.length,
-          itemBuilder: (context, index) {
-            final product = products[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductDetailPage(product: product),
-                  ),
-                );
-              },
-              child: _buildProductItem(product),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildProductItem(DocumentSnapshot product) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Image.network(
-              product['image'],
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Center(child: Icon(Icons.error));
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              product['name'],
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text('Price: \$${product['price']}'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showSearchDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Search'),
-          content: TextField(
-            autofocus: true,
-            decoration: InputDecoration(hintText: 'Search for items...'),
-            onChanged: (value) {
-              setState(() {
-                searchQuery = value;
-              });
-            },
-          ),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Search'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class ProductDetailPage extends StatelessWidget {
-  final DocumentSnapshot product;
-
-  ProductDetailPage({required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(product['name']),
-      ),
+      appBar: Goldtop(),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network(product['image']),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                product['name'],
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-              ),
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : _isChewieInitialized
+                      ? Chewie(controller: _chewieController)
+                      : Center(child: Text('Error loading video')),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Price: \$${product['price']}',
-                style: TextStyle(fontSize: 20.0),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                product['description'],
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Implement add to cart functionality
-                },
-                child: Text('Add to Cart'),
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 50),
+                  Text(
+                    'Welcome to the Thrift Shop!',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Gabriela-Regular',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'The Thrift page offers a community-driven marketplace where users can buy and sell pre-owned clothing items. It promotes sustainable fashion by encouraging the reuse of clothes, making unique and affordable styles accessible to all.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily:'Gabriela-Regular',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SellPage()),
+                          );
+                        },
+                        icon: Icon(Icons.sell),
+                        label: Text(
+                          'Sell',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Gabriela-Regular',
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                          backgroundColor: Color(0xFFB99A45),
+                          foregroundColor: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => BuyPage()),
+                          );
+                        },
+                        icon: Icon(Icons.shopping_cart),
+                        label: Text(
+                          'Buy',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Gabriela-Regular',
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                          backgroundColor: Color(0xFFB99A45),
+                          foregroundColor: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.white, currentIndex: 0),
     );
   }
 }

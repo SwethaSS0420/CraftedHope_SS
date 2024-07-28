@@ -130,6 +130,7 @@ class _ShopState extends State<Shop> {
                     'id': doc.id,
                     'name': doc['name'],
                     'image': doc['image'],
+                    'productimages': doc['productimages'],
                     'designer': doc['designer'],
                     'color': doc['color'],
                     'sizes': List<String>.from(doc['sizes']),
@@ -254,7 +255,7 @@ class _ShopState extends State<Shop> {
                                       ),
                                       if (products[index]['discount'] > 0)
                                         Text(
-                                          'Discounted Price: ₹${discountedPrice.toStringAsFixed(2)}',
+                                          '₹${discountedPrice.toStringAsFixed(2)}',
                                           style: TextStyle(
                                             fontFamily: 'Gabriela-Regular',
                                             fontSize: 16,

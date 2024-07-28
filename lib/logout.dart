@@ -1,6 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'login.dart';
+import 'landing.dart';
 
 class LogoutPage extends StatelessWidget {
   @override
@@ -8,7 +9,7 @@ class LogoutPage extends StatelessWidget {
     FirebaseAuth.instance.signOut().then((_) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => LandingPage()),
         (Route<dynamic> route) => false,
       );
     });

@@ -35,6 +35,11 @@ dependencies:
   line_icons: ^2.0.3
   curved_labeled_navigation_bar: ^2.0.2
   curved_navigation_bar: ^1.0.6
+  chewie: ^1.1.1
+  video_player: ^2.2.13
+  carousel_slider: ^4.1.1
+  flutter_rating_bar: ^4.0.0
+  animations: ^2.0.0
 
 flutter_native_splash:
   color: "#FFFFFF" # Background color of the splash screen
@@ -73,6 +78,15 @@ flutter:
     - assets/bamboo.png
     - assets/cart.png
     - assets/wishlist.png
+    - assets/thriftvid.mp4
+    - assets/nobgapp.png
+    - assets/frame.png
+    - assets/bg2.png
+    - assets/bg3.png
+    - assets/bg4.png
+    - assets/button1.png
+    - assets/th1.png
+    - assets/cloth.png
     
   fonts:
     - family: Gabriela-Regular

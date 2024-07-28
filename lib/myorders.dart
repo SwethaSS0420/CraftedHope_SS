@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sls/goldtop.dart';
+import 'package:sls/top.dart';
 import 'bottom.dart';
 import 'orderdetails.dart';
 import 'package:intl/intl.dart'; // For date formatting
@@ -12,6 +13,7 @@ class OrdersPage extends StatelessWidget {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: Goldtop(),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -56,9 +58,11 @@ class OrdersPage extends StatelessWidget {
                 margin: EdgeInsets.all(10.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
+                  
                 ),
                 child: Container(
                   decoration: BoxDecoration(
+                    color: Color(0XFF005959),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: ListTile(
@@ -71,21 +75,24 @@ class OrdersPage extends StatelessWidget {
                     title: Text(
                       'Order Date: $formattedDate',
                       style: TextStyle(
-                        fontFamily: 'Gabriola',
+                        fontFamily: 'Gabriela-Regular',
                         fontSize: 18.0,
                         fontWeight: FontWeight.w400,
+                        color: Colors.white,
                       ),
                     ),
                     subtitle: Text(
                       'Total Amount: ₹${totalAmount.toString()}',
                       style: TextStyle(
-                        fontFamily: 'Gabriola',
+                        fontFamily: 'Gabriela-Regular',
                         fontSize: 16.0,
                         fontWeight: FontWeight.w400,
+                        color: Colors.white,
                       ),
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.arrow_forward),
+                      color: Color(0xFFB99A45),
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -114,7 +121,7 @@ class OrdersPage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.white,currentIndex: 0),
+      bottomNavigationBar: BottomNavigation(pageBackgroundColor: Colors.black,currentIndex: 0),
     );
   }
 }
